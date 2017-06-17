@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <div class="row">
+        <h2>
+            Todas las urls que se transformaron:
+        </h2>
+    </div>
+
+    <div>
+        <table class="table table-hover table-condensed table-bordered">
+            <thead>
+                <tr>
+                    <th>large url</th>
+                    <th>short url</th>
+                    <th>created at</th>
+                    <th>last accesed at</th>
+                </tr>
+            </thead>
+
+            {% for url in all_urls %}
+            <tr>
+                <th>{{url.large_url}}</th>
+                <th>{{url.short_url}}</th>
+                <th>{{url.created_at}}</th>
+                <th>{{url.updated_at}}</th>
+
+            </tr>
+
+            {% endfor %}
+
+        </table>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8 col-sm-12">
+            {% block main-content %}{% endblock %}
+        </div>
+        <div class="col-md-4 hidden-sm">
+            {% block sidebar %}{% endblock %}
+        </div>
+    </div>
+
+{% endblock %}

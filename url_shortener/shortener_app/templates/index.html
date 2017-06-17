@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <div class="row">
+        <h1>
+            Shortener Service
+        </h1>
+        <p>
+            Written by Tim Givois
+        </p>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <form action="{% url 'view' %}">
+                <input type="submit" value="View urls shortened" />
+            </form>
+        </div>
+        <div class="col-md-4">
+            <form action="{% url 'transform' %}">
+                <input type="submit" value="Transform Urls" />
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
