@@ -1,14 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div class="row">
-        <h1>
-            Shortener Service
-        </h1>
-        <p>
-            Written by Tim Givois
-        </p>
-    </div>
 
     <div class="row">
         <div class="col-md-12">
@@ -27,7 +19,7 @@
 
     {% if short_url %}
     <div class="row">
-        <p>{{ short_url }}</p>
+        <p><a target="_blank" href="{{short_url}}">{{host}}/{{short_url}}</a></p>
     </div>
     {% endif %}
 

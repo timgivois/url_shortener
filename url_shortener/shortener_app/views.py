@@ -2,18 +2,19 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from shortener_app.tools import compress_url
+from django.db.models import F
+from shortener_app.tools import RedisCompresser
 from django.shortcuts import render
 from shortener_app.models import Url_Transformations
 
+compreser = RedisCompresser()
 
 def index(request):
     return render(request, 'index.html')
 
 def view(request):
     all_urls = Url_Transformations.objects.all()
-    context = {'all_urls': all_urls}
+    context = {'all_urls': all_urls, 'host': request.get_host()}
 
     return render(request, 'view.html', context)
 
@@ -22,21 +23,29 @@ def transform(request):
 
     if request.method == 'POST':
         print request.POST.items()
-        large_url = request.POST.get("large_url", "asd")
-        url_transformation = Url_Transformations.objects.get_or_create(large_url=large_url)[0]
-        url_transformation.short_url = url_transformation.short_url if url_transformation.short_url else compress_url(large_url)
-        url_transformation.save()
-        context = {'short_url':url_transformation.short_url}
+        large_url = request.POST.get("large_url")
+
+        if not large_url:
+            return render(request, 'transform.html', {})
+
+        short_url = compreser.key_in_cache(large_url)
+        if short_url:
+            context = {'short_url': short_url, 'host': request.get_host()}
+        else:
+            url_transformation = Url_Transformations.objects.create(large_url=large_url,
+                                                                    short_url=compreser.compress_url(large_url))
+            url_transformation.save()
+            context = {'short_url': url_transformation.short_url, 'host': request.get_host()}
 
     return render(request, 'transform.html', context)
 
 def redirect_short_url(request):
-
-    large_url = request.get_host() + request.get_full_path()
+    short_url = request.get_full_path().replace('/', '')
+    print short_url
+    large_url = compreser.key_in_cache(short_url)
     print large_url
-    if Url_Transformations.objects.filter(short_url=large_url):
-
-        return redirect(Url_Transformations.objects.filter(short_url=large_url)[0].large_url)
-
+    if large_url:
+        Url_Transformations.objects.filter(short_url=short_url).update(count_visited=F('count_visited')+1)
+        return redirect(large_url)
     else:
         return render(request, 'index.html')
