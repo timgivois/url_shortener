@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.shortcuts import render, redirect
 from django.db.models import F
-from shortener_app.tools import RedisCompresser
+from django.shortcuts import redirect
 from django.shortcuts import render
-from shortener_app.models import Url_Transformations
+from models import Url_Transformations
+
+from tools import RedisCompresser
 
 compreser = RedisCompresser()
 
