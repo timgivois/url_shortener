@@ -8,7 +8,8 @@ from django.shortcuts import render
 from models import Url_Transformations
 from multiprocessing import Process
 
-from tools import RedisHandler, get_real_url, is_valid_url
+from tools import RedisHandler, get_real_url
+from validators import transform_validator, redirect_validator
 
 redis_handler = RedisHandler()
 
@@ -36,34 +37,38 @@ def view(request):
 def transform(request):
     context = {}
 
-    if request.method == 'POST':
-        large_url = request.POST.get("large_url")
-        
-        if not large_url or not is_valid_url(large_url):
-            return render(request, 'transform.html', {'error': {'message': 'No es una URL valida'}})
+    is_valid_request, error_response = transform_validator(request)
 
-        large_url = get_real_url(large_url)
-        short_url = redis_handler.key_in_cache(large_url)
-        
-        if not short_url:
-            short_url = redis_handler.compress_url(large_url)
-            Process(target=async_insertion, args=(short_url, large_url,)).run()
+    if is_valid_request:
+        if request.method == 'POST':
+            large_url = request.POST.get("large_url")
+            desired_url = request.POST.get("desired_url")
 
-        context = {'short_url': short_url, 'host': request.get_host()}
+            large_url = get_real_url(large_url)
+            short_url = redis_handler.key_in_cache(large_url)
+
+            if not short_url:
+                short_url = redis_handler.compress_url(large_url, desired_url)
+                Process(target=async_insertion, args=(short_url, large_url,)).run()
+
+            context = {'short_url': short_url, 'host': request.get_host()}
+    else:
+
+        return error_response
 
     return render(request, 'transform.html', context)
 
 
 def redirect_short_url(request):
-    short_url = request.get_full_path().replace('/', '')
-    large_url = redis_handler.key_in_cache(short_url)
+    is_valid_request, error_response = redirect_validator(request)
 
-    if not is_valid_url(short_url):
-        return render(request, 'index.html', {'error': {'message': 'No es una URL valida'}}) # return error that it is not a valid url
+    if is_valid_request:
+        short_url = request.get_full_path().replace('/', '')
+        large_url = redis_handler.key_in_cache(short_url)
 
-    if large_url:
         Process(target=async_insertion, args=(short_url, large_url,)).run()
 
         return redirect(large_url)
     else:
-        return render(request, 'index.html') # Agregar un error de que no existe la URL
+
+        return error_response

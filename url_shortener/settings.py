@@ -1,5 +1,6 @@
 import os
 import sys
+import string
 from dotenv import load_dotenv
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -18,6 +19,8 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 RANDOM_DIGITS = int(os.getenv('RANDOM_DIGITS'))
+
+POSSIBLE_CHARS_URL = string.ascii_letters + string.digits
 
 REDIS_CONFIGURATION = {
     'host': os.getenv('REDIS_HOST'),

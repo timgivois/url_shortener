@@ -14,8 +14,12 @@
 
                 <form action="{% url 'transform' %}" method="post">
                     {% csrf_token %}
-                    <label for="large_url">Url:</label>
+                    <label for="large_url">Large URL:</label>
                     <input type="text" class="form-control" id="large_url" name="large_url">
+                    <br>
+                    <label for="desired_url">Desired URL:</label>
+                    <input type="text" class="form-control" id="desired_url" name="desired_url">
+                    <br>
                     <input type="submit" value="Transform the url" />
                 </form>
 
