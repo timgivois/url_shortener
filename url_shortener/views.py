@@ -7,6 +7,7 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from models import Url_Transformations
 from multiprocessing import Process
+from django.db import transaction
 
 from tools import RedisHandler, get_real_url
 from validators import transform_validator, redirect_validator
@@ -15,7 +16,15 @@ redis_handler = RedisHandler()
 
 
 def async_insertion(short_url, large_url):
-    Url_Transformations.objects.create(short_url=short_url, large_url=large_url).save()
+    Url_Transformations.objects.create(short_url=short_url, large_url=large_url, count=0).save()
+
+
+def async_plus_one(short_url, large_url):
+    with transaction.atomic():
+        transf = Url_Transformations.objects.select_for_update().filter(short_url=short_url, large_url=large_url)
+        if transf:
+            transf[0].count = transf[0].count + 1
+            transf[0].save()
 
 
 def index(request):
@@ -23,11 +32,7 @@ def index(request):
 
 
 def view(request):
-    results_clicks = Url_Transformations.objects.values('short_url', 'large_url') \
-        .annotate(count=Count('short_url') - 1,
-                  created_at=Min('retrieved_at'),
-                  last_retrieved_at=Max('retrieved_at')) \
-        .order_by('-count')
+    results_clicks = Url_Transformations.objects.all()
 
     context = {'results_clicks': results_clicks, 'host': request.get_host()}
 
@@ -66,7 +71,7 @@ def redirect_short_url(request):
         short_url = request.get_full_path().replace('/', '')
         large_url = redis_handler.key_in_cache(short_url)
 
-        Process(target=async_insertion, args=(short_url, large_url,)).run()
+        Process(target=async_plus_one, args=(short_url, large_url,)).run()
 
         return redirect(large_url)
     else:

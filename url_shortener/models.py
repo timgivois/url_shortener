@@ -9,7 +9,9 @@ from tools import clean_url
 class Url_Transformations(models.Model):
     large_url = models.CharField(db_index=True, max_length=2000)
     short_url = models.CharField(db_index=True, max_length=10)
-    retrieved_at = models.DateTimeField(db_index=True, auto_now=True)
+    count = models.IntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
         self.large_url = clean_url(self.large_url)
