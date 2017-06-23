@@ -5,3 +5,4 @@ env/*
 .idea
 .env
 .log
+url_shortener/migrations/*
