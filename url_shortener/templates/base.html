@@ -42,7 +42,17 @@
                     <input type="submit" value="Transform Urls" />
                 </form>
             </div>
+            <div class="col-xs-12" style="height:50px;"></div>
         </div>
+        {% if error %}
+
+            <div class="row">
+                <div  class="alert alert-danger">
+                    <strong> Error: </strong> {{ error.message }}
+
+                </div>
+            </div>
+        {% endif %}
 
         {% block content %}
         {% endblock %}

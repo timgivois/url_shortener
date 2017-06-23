@@ -2,6 +2,9 @@
 
 # FROM directive instructing base image to build upon
 FROM python:2-onbuild
+RUN apt-get update
+RUN apt-get install -y gunicorn
+RUN pip install gunicorn
 
 # COPY startup script into known file location in container
 COPY start.sh /start.sh

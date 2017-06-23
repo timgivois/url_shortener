@@ -2,6 +2,12 @@
 
 {% block content %}
 
+    {% if short_url %}
+    <div class="row alert alert-success">
+        The URL generated is: <a target="_blank" href="{{short_url}}">{{host}}/{{short_url}}</a>
+    </div>
+    {% endif %}
+
     <div class="row">
         <div class="col-md-12">
             <div class="form-group">
@@ -16,11 +22,5 @@
             </div>
         </div>
     </div>
-
-    {% if short_url %}
-    <div class="row">
-        <p><a target="_blank" href="{{short_url}}">{{host}}/{{short_url}}</a></p>
-    </div>
-    {% endif %}
 
 {% endblock %}

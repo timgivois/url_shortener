@@ -1,7 +1,10 @@
 import os
+import sys
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
@@ -14,13 +17,28 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-RANDOM_DIGITS = 4
+RANDOM_DIGITS = int(os.getenv('RANDOM_DIGITS'))
 
 REDIS_CONFIGURATION = {
-    'host': 'localhost',
-    'port': 6379,
-    'db': 0,
+    'host': os.getenv('REDIS_HOST'),
+    'port': os.getenv('REDIS_PORT'),
+    'db': os.getenv('REDIS_DB'),
 }
+
+LOGGING = {
+    'version': 1,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'stream': sys.stdout,
+        }
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO'
+    }
+}
+
 
 # Application definition
 
@@ -71,11 +89,11 @@ WSGI_APPLICATION = 'url_shortener.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'url_compressor',
-        'USER': 'server_user_url_compressor',
-        'PASSWORD': '#T4j=DU}UNmJ28&',
-        'HOST': 'localhost',
-        'PORT': '',
+        'NAME': os.getenv('MYSQL_DATABASE'),
+        'USER': os.getenv('MYSQL_USER'),
+        'PASSWORD': os.getenv('MYSQL_PASSWORD'),
+        'HOST': os.getenv('MYSQL_HOST'),
+        'PORT': os.getenv('MYSQL_PORT'),
 
     }
 }
