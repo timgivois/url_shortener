@@ -3,6 +3,7 @@ backports.shutil-get-terminal-size==1.0.0
 base58==0.2.5
 certifi==2017.4.17
 chardet==3.0.4
+click==6.7
 decorator==4.0.11
 Django==1.11.2
 django-extensions==1.7.9
@@ -20,6 +21,7 @@ ptyprocess==0.5.1
 Pygments==2.2.0
 pymongo==3.4.0
 PyMySQL==0.7.11
+python-dotenv==0.6.4
 pytz==2017.2
 redis==2.10.5
 requests==2.18.1
