@@ -23,4 +23,4 @@ If we want to run our app, we should simply run
 
 Concept
 -------------
-This shortener relies on the concept of generating 10 random ascii letters for a new url and store them in Redis. To avoid collisions, we have on Redis both the random token and the url in order to fetch them whenever we get a new url and we want to calculate another random token. SQLite is just used for statistics.
+This shortener relies on the concept of generating 10 random ascii letters for a new url and store them in Redis. To avoid collisions, we have on Redis both the random token and the url in order to fetch them whenever we get a new url and we want to calculate another random token. MySQL is just used for statistics.

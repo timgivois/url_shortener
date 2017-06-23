@@ -20,13 +20,13 @@
                 </tr>
             </thead>
 
-            {% for url in all_urls %}
+            {% for result in results_clicks %}
             <tr>
-                <th>{{url.large_url}}</th>
-                <th><a target="_blank" href="{{url.short_url}}">{{host}}/{{url.short_url}}</a></th>
-                <th>{{url.count_visited}}</th>
-                <th>{{url.created_at}}</th>
-                <th>{{url.updated_at}}</th>
+                <th>{{result.large_url}}</th>
+                <th><a target="_blank" href="{{result.short_url}}">{{host}}/{{result.short_url}}</a></th>
+                <th>{{result.count}}</th>
+                <th>{{result.created_at}}</th>
+                <th>{% if result.count > 0%} {{result.last_retrieved_at}}{% endif %}</th>
 
             </tr>
 
