@@ -23,7 +23,6 @@ def append_http_if_needed(large_url):
 
 
 def get_real_url(large_url):
-
     if re.search('^http', large_url):
         try:
             large_url = requests.get(large_url).url
@@ -34,7 +33,6 @@ def get_real_url(large_url):
 
 
 def validate_desired_url(desired_url):
-
     if len(desired_url) != RANDOM_DIGITS and len(desired_url) > 0:
         return False, {"error": {"message": "El tamaño de la url es de {0} y debe ser de {1}".format(len(desired_url),
                                                                                                      RANDOM_DIGITS)}}
@@ -57,6 +55,7 @@ def is_valid_url(url):
         r'(?:/?|[/?]\S+)$', re.IGNORECASE)
 
     return regex.match(url)
+
 
 class RedisHandler:
     def __init__(self):

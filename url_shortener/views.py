@@ -23,10 +23,10 @@ def index(request):
 
 
 def view(request):
-    results_clicks = Url_Transformations.objects.values('short_url', 'large_url')\
-        .annotate(count = Count('short_url')-1,
-                  created_at = Min('retrieved_at'),
-                  last_retrieved_at = Max('retrieved_at'))\
+    results_clicks = Url_Transformations.objects.values('short_url', 'large_url') \
+        .annotate(count=Count('short_url') - 1,
+                  created_at=Min('retrieved_at'),
+                  last_retrieved_at=Max('retrieved_at')) \
         .order_by('-count')
 
     context = {'results_clicks': results_clicks, 'host': request.get_host()}
